@@ -1,5 +1,8 @@
 # Quick note for moopy
 
+`index.js`: api usage example
+`jsdb.js`: the local api
+
 ### JSDB formatting:
 
 ```
