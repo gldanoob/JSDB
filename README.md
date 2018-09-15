@@ -1,6 +1,6 @@
-# Quick note for moopy
+# Quick note
 
-`index.js`: api usage example
+`index.js`: api usage example  
 `jsdb.js`: the local api
 
 ### JSDB formatting:
