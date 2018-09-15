@@ -8,7 +8,7 @@ class JSDB {
         //name of the database
         this.db = db;
         // Logs the date when the DB is created
-        fs.writeFile(this.db + ".db", Date(), err => {
+        fs.writeFile(this.db + ".jsdb", Date(), err => {
             if (err) throw err;
         });
     }
@@ -36,7 +36,7 @@ class JSDB {
                 data += "\n";
             }
         }
-        fs.writeFile(this.db + ".db", data, err => {
+        fs.writeFile(this.db + ".jsdb", data, err => {
             if (err) throw err;
             
         });
