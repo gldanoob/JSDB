@@ -2,6 +2,13 @@ const fs = require('fs');
 
 exports.createDB = name => new JSDB(name);
 
+function checkArrays(arr1, arr2){
+    for (const val of arr1){
+        if (!arr2.includes(val)) return false;
+    }
+    return true;
+}
+
 class JSDB {
     constructor(db) {
         this.tables = {};
@@ -56,16 +63,40 @@ class Table {
     }
     findAllColumns(data){
         if (!data) throw new Error("Data value can't be empty");
-        let findColumns = [];
+        let foundColumns = [];
         let findColumn;
         if (["string", "number"].includes(typeof data)){
             for (const name in this.columns){
                 if (this.columns.hasOwnProperty(name)) findColumn = this.columns[name];
-                if (findColumn.data.includes(data)) findColumns.push(findColumn)
+                if (findColumn.data.includes(data)) foundColumns.push(findColumn);
             }
-            return findColumns;
         }
+        else if (Array.isArray(data)){
+            for (const name in this.columns) {
+                if (this.columns.hasOwnProperty(name)) findColumn = this.columns[name];
+                if (checkArrays(data, findColumn.data)) foundColumns.push(findColumn)
+                }
+            }
+        return foundColumns;
     }
+    findOneColumn(data){
+        if (!data) throw new Error("Data value can't be empty");
+        let findColumn;
+        let foundColumn;
+        if (["string", "number"].includes(typeof data)){
+            for (const name in this.columns){
+                if (this.columns.hasOwnProperty(name)) findColumn = this.columns[name];
+                if (findColumn.data.includes(data)) foundColumn = findColumn;
+            }
+        }
+        else if (Array.isArray(data)){
+            for (const name in this.columns){
+                if (this.columns.hasOwnProperty(name)) findColumn = this.columns[name];
+                if (checkArrays(data, findColumn.data)) foundColumn = findColumn;
+                }
+            }
+        return findColumn;
+        }
 }
 
 class Column {
