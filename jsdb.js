@@ -54,6 +54,18 @@ class Table {
         return column;
         
     }
+    findAllColumns(data){
+        if (!data) throw new Error("Data value can't be empty");
+        let findColumns = [];
+        let findColumn;
+        if (["string", "number"].includes(typeof data)){
+            for (const name in this.columns){
+                if (this.columns.hasOwnProperty(name)) findColumn = this.columns[name];
+                if (findColumn.data.includes(data)) findColumns.push(findColumn)
+            }
+            return findColumns;
+        }
+    }
 }
 
 class Column {
