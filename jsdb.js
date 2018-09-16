@@ -130,6 +130,24 @@ class Table {
         delete this.columns[name];
     }
 
+    insertAllColumns(...data) {
+        let lengths = [];
+        for (const d of data){
+            if (!d) throw new Error("Data value can't be empty");
+            for (const name in this.columns) lengths.push(this.columns[name].data.length);
+            const maxLength = Math.max(...lengths);
+            for (const name in this.columns){
+                const lens = this.columns[name].data.length;
+                if (lens < maxLength){
+                    const original = lens;
+                    this.columns[name].data.length = maxLength;
+                    this.columns[name].data.fill(null, original, maxLength);
+                }
+                this.columns[name].data.push(d);
+            }
+        }
+    }
+
 }
 
 class Column {
