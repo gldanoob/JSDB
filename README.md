@@ -1,15 +1,15 @@
-# Quick note
+# JSDB Documentation
 
-`index.js`: api usage example  
-`jsdb.js`: the local api
+### Contents
+- [Example](#example)
+- [JSDB methods](#methods)
 
-### JSDB formatting:
 
+### <a name="example"></a> Example
+```js
+const db = require('./jsdb');
+db =
 ```
-LAST MODIFICATION TIME
-#TABLE_NAME
-COLUMN_NAME "string" num
-COLUMN_NAME2 num1
-#ANOTHER_TABLE_NAME
-COLUMN_NAME2 "lol" "oof"
-```
+
+
+### <a name="methods"></a> JSDB methods
