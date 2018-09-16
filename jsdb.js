@@ -72,9 +72,9 @@ class JSDB {
             let data = Date();
             for (const t in this.tables) {
                 data += "\n\n" + t;
-                for (const c in this.tables[t].columns) {
-                    data += "\n" + encodeURI(c);
-                    for (const d of this.tables[t].columns[c].data) {
+                for (const c of this.tables[t].columns) {
+                    data += "\n" + encodeURI(c.name);
+                    for (const d of c.data) {
                         data += " ";
                         if (typeof d == "string")
                             data += '"' + encodeURI(d) + '"';
@@ -93,7 +93,7 @@ class JSDB {
 
 class Table {
     constructor() {
-        this.columns = {};
+        this.columns = [];
     }
 
     list() {
@@ -102,14 +102,14 @@ class Table {
 
     addColumn(name) {
         if (!name) throw new Error("Column name can't be empty");
-        const column = new Column();
-        this.columns[name] = column;
+        const column = new Column(name);
+        this.columns.push(column);
         return column;
 
     }
 
     getColumn(name) {
-        const column = this.columns[name];
+        const column = this.columns.find(c => c.name == name);
         if (!column) throw new Error("Can't find column: " + name);
         return column;
     }
@@ -117,17 +117,15 @@ class Table {
     findColumns(...data) {
         if (!data) throw new Error("Data value can't be empty");
         const found = [];
-        for (const name in this.columns) {
-            const finding = this.columns[name];
-            if (checkArrays(data, finding.data)) found.push(finding);
-        }
+        for (const c of this.columns) 
+            if (checkArrays(data, c.data)) found.push(c);
         return found;
     }
 
     deleteColumn(name) {
-        const column = this.columns[name];
-        if (!column) throw new Error("Can't find column: " + name);
-        delete this.columns[name];
+        const index = this.columns.findIndex(c => c.name == name);
+        if (index == -1) throw new Error("Can't find column: " + name);
+        this.columns.splice(index, 1);
     }
 
     insertAllColumns(...data) {
@@ -151,7 +149,8 @@ class Table {
 }
 
 class Column {
-    constructor() {
+    constructor(name) {
+        this.name = name;
         this.data = [];
     }
 
@@ -162,9 +161,9 @@ class Column {
     add(...data) {
         for (const d of data) {
             if (!d) throw new Error("Data value can't be empty");
-            if (["string", "number"].includes(typeof d))
+            if (d === null || ["string", "number"].includes(typeof d))
                 this.data.push(d);
-            else throw new Error("Data can only be a string or number");
+            else throw new Error("Data can only be null, a string or number");
         }
     }
 
