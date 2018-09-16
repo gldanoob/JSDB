@@ -4,7 +4,8 @@ async function playWithDB() {
     const test = await db.createDB("test");
     const table = test.addTable("table");
     const column = table.addColumn('lol')
-    column.add(1, 2, 3)
+    const xd = table.addColumn('xd')
+    table.insertAllColumns(2)
 
     await test.update();
 }

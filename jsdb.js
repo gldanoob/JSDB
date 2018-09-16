@@ -22,6 +22,7 @@ exports.parseDB = name => new Promise((res, rej) => {
                 for (const d of data)
                     if (d.match(/".*"/))
                         column.add(decodeURI(d.substring(1, d.length - 1)));
+                    else if (d == "null") column.add(null);
                     else column.add(parseFloat(d));
             }
         }
@@ -31,10 +32,21 @@ exports.parseDB = name => new Promise((res, rej) => {
 
 
 function checkArrays(arr1, arr2) {
-    for (const val of arr1) {
+    for (const val of arr1)
         if (!arr2.includes(val)) return false;
-    }
     return true;
+}
+
+function isValidData(data) {
+    if (data === null || ["string", "number"].includes(typeof data)) 
+        return true;
+    throw new Error("Data value can only be a string, number or null");
+}
+
+function isValidName(name) {
+    if (typeof name == "string" && name != "")
+        return true;
+    throw new Error("The name can only be a non-empty string");
 }
 
 class JSDB {
@@ -49,7 +61,7 @@ class JSDB {
     }
 
     addTable(name) {
-        if (!name) throw new Error("Table name can't be empty");
+        isValidName(name);
         const table = new Table(name);
         this.tables[name] = table;
         return table;
@@ -101,7 +113,7 @@ class Table {
     }
 
     addColumn(name) {
-        if (!name) throw new Error("Column name can't be empty");
+        isValidName(name);
         const column = new Column(name);
         this.columns.push(column);
         return column;
@@ -115,7 +127,7 @@ class Table {
     }
 
     findColumns(...data) {
-        if (!data) throw new Error("Data value can't be empty");
+        if (!data.length) throw new Error("Data value can't be empty");
         const found = [];
         for (const c of this.columns) 
             if (checkArrays(data, c.data)) found.push(c);
@@ -129,20 +141,20 @@ class Table {
     }
 
     insertAllColumns(...data) {
-        let lengths = [];
-        for (const d of data){
-            if (!d) throw new Error("Data value can't be empty");
-            for (const name in this.columns) lengths.push(this.columns[name].data.length);
-            const maxLength = Math.max(...lengths);
-            for (const name in this.columns){
-                const lens = this.columns[name].data.length;
-                if (lens < maxLength){
-                    const original = lens;
-                    this.columns[name].data.length = maxLength;
-                    this.columns[name].data.fill(null, original, maxLength);
-                }
-                this.columns[name].data.push(d);
+        if (!data.length) throw new Error("Data value can't be empty");
+        const lengths = [];
+        for (const name in this.columns) lengths.push(this.columns[name].data.length);
+        const maxLength = Math.max(...lengths);
+        for (const column of this.columns){
+            const lens = column.data.length;
+            if (lens < maxLength){
+                const original = lens;
+                column.data.length = maxLength;
+                column.data.fill(null, original, maxLength);
             }
+            let d = data.shift();
+            if(d === undefined) d = null;
+            if (isValidData(d)) column.data.push(d);
         }
     }
 
@@ -160,10 +172,7 @@ class Column {
 
     add(...data) {
         for (const d of data) {
-            if (!d) throw new Error("Data value can't be empty");
-            if (d === null || ["string", "number"].includes(typeof d))
-                this.data.push(d);
-            else throw new Error("Data can only be null, a string or number");
+            if(isValidData(d)) this.data.push(d);
         }
     }
 
@@ -178,7 +187,6 @@ class Column {
 
     remove(...data) {
         for (const d of data){
-            if (!d) throw new Error("Data value can't be empty");
             if (!this.data.includes(d)) throw new Error("Can't find data value: " + d);
             this.data.splice(this.data.indexOf(d), 1);
         }
