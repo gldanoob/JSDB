@@ -5,7 +5,7 @@
 - [JSDB methods](#methods)
 
 
-### <a name="example"></a> Example
+### Example
 ```js
 const db = require('./jsdb');
 db =
