@@ -2,7 +2,7 @@
 
 ### Contents
 - [Example](#example)
-- [JSDB methods](#methods)
+- [JSDB methods](#-jsdb-methods)
 
 
 ### Example
@@ -12,4 +12,8 @@ db =
 ```
 
 
-### <a name="methods"></a> JSDB methods
+### JSDB methods
+
+- `createDB`: creates a database and returns the [JSDB](#jsdb) object  
+- `parseDB`: parse an existing database and returns the [JSDB](#jsdb) object
+
