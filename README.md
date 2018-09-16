@@ -1,19 +1,23 @@
 # JSDB Documentation
 
-### Contents
+## Contents
 - [Example](#example)
-- [JSDB methods](#-jsdb-methods)
+- [Methods](#methods)
 
 
-### Example
+## Example
 ```js
 const db = require('./jsdb');
-db =
+const myDB = db.createDB('myDB');
 ```
 
 
-### JSDB methods
+## Methods
 
 - `createDB`: creates a database and returns the [JSDB](#jsdb) object  
 - `parseDB`: parse an existing database and returns the [JSDB](#jsdb) object
 
+## Classes
+
+### JSDB
+#### Methods
