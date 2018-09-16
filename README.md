@@ -35,7 +35,7 @@ myDB.update();
 - `list()`: returns an array of column names  
 - `addColumn(name)`: adds a column of the `name` into the table and returns the [Column](#column) object  
 - `getColumn(name)` gets the column by `name` and returns it as a [Column](#column) object  
-- `findColumns(data1, data2...)` retruns all columns with the matching data  
+- `findColumns(data1, data2...)` returns all columns with the matching data  
 
 ### Column
 - `list()` returns an array of data values 
