@@ -1,15 +1,15 @@
 const fs = require('fs');
 
-exports.createDB = name => {
+exports.createDB = name => new Promise((res, rej) => {
     fs.writeFile(name + ".jsdb", Date(), err => {
-        if (err) throw err;
+        if (err) rej(err);
+        res(new JSDB(name));
     });
-    return new JSDB(name);
-}
+});
 
-exports.parseDB = name => new Promise(res => {
+exports.parseDB = name => new Promise((res, rej) => {
     fs.readFile(name + ".jsdb", 'utf8', (err, data) => {
-        if (err) throw err;
+        if (err) rej(err);
         const db = new JSDB(name);
         const tables = data.split('\n\n');
         tables.shift();
@@ -24,9 +24,7 @@ exports.parseDB = name => new Promise(res => {
                         column.add(decodeURI(d.substring(1, d.length - 1)));
                     else column.add(parseFloat(d));
             }
-
         }
-
         res(db);
     })
 });
@@ -64,23 +62,26 @@ class JSDB {
     }
 
     update() {
-        let data = Date();
-        for (const t in this.tables) {
-            data += "\n\n" + t;
-            for (const c in this.tables[t].columns) {
-                data += "\n" + encodeURI(c);
-                for (const d of this.tables[t].columns[c].data) {
-                    data += " ";
-                    if (typeof d == "string")
-                        data += '"' + encodeURI(d) + '"';
-                    else
-                        data += d;
+        return new Promise((res, rej) => {
+            let data = Date();
+            for (const t in this.tables) {
+                data += "\n\n" + t;
+                for (const c in this.tables[t].columns) {
+                    data += "\n" + encodeURI(c);
+                    for (const d of this.tables[t].columns[c].data) {
+                        data += " ";
+                        if (typeof d == "string")
+                            data += '"' + encodeURI(d) + '"';
+                        else
+                            data += d;
+                    }
                 }
             }
-        }
-        fs.writeFile(this.db + ".jsdb", data, err => {
-            if (err) throw err;
-        });
+            fs.writeFile(this.db + ".jsdb", data, err => {
+                if (err) rej(err);
+                res();
+            });
+        })
     }
 }
 
