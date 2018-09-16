@@ -57,8 +57,14 @@ class JSDB {
 
     getTable(name) {
         const table = this.tables[name];
-        if (!table) throw new Error("Can't find table " + name);
+        if (!table) throw new Error("Can't find table: " + name);
         return table;
+    }
+
+    deleteTable(name) {
+        const table = this.tables[name];
+        if (!table) throw new Error("Can't find table: " + name);
+        delete this.tables[name];
     }
 
     update() {
@@ -117,6 +123,13 @@ class Table {
         }
         return found;
     }
+
+    deleteColumn(name) {
+        const column = this.columns[name];
+        if (!column) throw new Error("Can't find column: " + name);
+        delete this.columns[name];
+    }
+
 }
 
 class Column {
@@ -145,4 +158,13 @@ class Column {
             }
         }
     }
+
+    remove(...data) {
+        for (const d of data){
+            if (!d) throw new Error("Data value can't be empty");
+            if (!this.data.includes(d)) throw new Error("Can't find data value: " + d);
+            this.data.splice(this.data.indexOf(d), 1);
+        }
+    }
+
 }
