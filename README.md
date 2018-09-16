@@ -37,13 +37,8 @@ example();
 ### Table
 - `list()`: returns an array of column names  
 - `addColumn(name)`: adds a column of the `name` into the table and returns the [Column](#column) object  
-<<<<<<< HEAD
-- `getColumn(name)`: gets the column by `name` and returns it as a [Column](#column) object  
-- `findColumns(data1, data2...)`: retruns all columns with the matching data  
-=======
 - `getColumn(name)` gets the column by `name` and returns it as a [Column](#column) object  
 - `findColumns(data1, data2...)` returns all columns with the matching data  
->>>>>>> 5637c7fd7bbfc8ffcf1f309b6d613c81136238f9
 
 ### Column
 - `list()`: returns an array of data values 
