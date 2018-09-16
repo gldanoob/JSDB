@@ -26,7 +26,6 @@ myDB.update();
 ## Classes
 
 ### JSDB
-#### Methods
 - `list()`: returns an array of table names  
 - `addTable(name)`: adds a table of the name into the database and returns the [Table](#table) object  
 - `getTable(name)` gets the table by name and returns it as a [Table](#table) object  
