@@ -107,42 +107,14 @@ class Table {
         return column;
     }
 
-    findAllColumns(data) {
+    findColumns(...data) {
         if (!data) throw new Error("Data value can't be empty");
-        let foundColumns = [];
-        let findColumn;
-        if (["string", "number"].includes(typeof data)) {
-            for (const name in this.columns) {
-                if (this.columns.hasOwnProperty(name)) findColumn = this.columns[name];
-                if (findColumn.data.includes(data)) foundColumns.push(findColumn);
-            }
+        const found = [];
+        for (const name in this.columns) {
+            const finding = this.columns[name];
+            if (checkArrays(data, finding.data)) found.push(finding);
         }
-        else if (Array.isArray(data)) {
-            for (const name in this.columns) {
-                if (this.columns.hasOwnProperty(name)) findColumn = this.columns[name];
-                if (checkArrays(data, findColumn.data)) foundColumns.push(findColumn)
-            }
-        }
-        return foundColumns;
-    }
-
-    findOneColumn(data) {
-        if (!data) throw new Error("Data value can't be empty");
-        let findColumn;
-        let foundColumn;
-        if (["string", "number"].includes(typeof data)) {
-            for (const name in this.columns) {
-                if (this.columns.hasOwnProperty(name)) findColumn = this.columns[name];
-                if (findColumn.data.includes(data)) foundColumn = findColumn;
-            }
-        }
-        else if (Array.isArray(data)) {
-            for (const name in this.columns) {
-                if (this.columns.hasOwnProperty(name)) findColumn = this.columns[name];
-                if (checkArrays(data, findColumn.data)) foundColumn = findColumn;
-            }
-        }
-        return findColumn;
+        return found;
     }
 }
 
@@ -154,7 +126,7 @@ class Column {
     list() {
         return this.data.slice();
     }
-    
+
     add(...data) {
         for (const d of data) {
             if (!d) throw new Error("Data value can't be empty");
@@ -165,10 +137,10 @@ class Column {
     }
 
     replace(oldData, newData, all) {
-        for(const i in data) {
+        for (const i in data) {
             if (d === oldData) {
                 this.data[i] == newData;
-                if (!all) return; 
+                if (!all) return;
             }
         }
     }
