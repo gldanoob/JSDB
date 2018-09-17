@@ -1,13 +1,14 @@
 const db = require('./jsdb');
 
 async function playWithDB() {
-    const test = await db.createDB("test");
-    const table = test.addTable("table");
-    const column = table.addColumn('lol')
-    const xd = table.addColumn('xd')
-    table.insertAllColumns(2)
+    const test = await db.parseDB('test');
 
-    await test.update();
+    const table = test.getTable('table');
+
+    const lol = table.getColumn('lol');
+
+    console.log(lol.list());
+
 }
 
 playWithDB();

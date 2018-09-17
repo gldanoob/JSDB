@@ -8,6 +8,8 @@ exports.createDB = name => new Promise((res, rej) => {
 });
 
 exports.parseDB = name => new Promise((res, rej) => {
+    if (!name || typeof name !== 'string') 
+        throw new Error('Unprovided database name');
     fs.readFile(name + ".jsdb", 'utf8', (err, data) => {
         if (err) rej(err);
         const db = new JSDB(name);
@@ -20,9 +22,13 @@ exports.parseDB = name => new Promise((res, rej) => {
                 const data = c.split(' ');
                 const column = table.addColumn(decodeURI(data.shift()));
                 for (const d of data)
-                    if (d.match(/".*"/))
+                    if (d == "null") column.add(null);
+                    else if (d.match(/`.*`/))
+                        column.add(JSON.parse(decodeURI(d.substring(1, d.length - 1))));
+                    else if (d.match(/".*"/))
                         column.add(decodeURI(d.substring(1, d.length - 1)));
-                    else if (d == "null") column.add(null);
+                    else if (d == "true") column.add(true);
+                    else if (d == "false") column.add(false);
                     else column.add(parseFloat(d));
             }
         }
@@ -38,9 +44,9 @@ function checkArrays(arr1, arr2) {
 }
 
 function isValidData(data) {
-    if (data === null || ["string", "number"].includes(typeof data))
-        return true;
-    throw new Error("Data value can only be a string, number or null");
+    if (data === undefined || Number.isNaN(data))
+        throw new Error("Data value can't be undefined or NaN.");
+    return true;
 }
 
 function isValidName(name) {
@@ -88,7 +94,10 @@ class JSDB {
                     data += "\n" + encodeURI(c.name);
                     for (const d of c.data) {
                         data += " ";
-                        if (typeof d == "string")
+                        if (d == null) data += 'null';
+                        else if (typeof d == "object") 
+                            data += '`' + encodeURI(JSON.stringify(d)) + '`';
+                        else if (typeof d == "string")
                             data += '"' + encodeURI(d) + '"';
                         else
                             data += d;
@@ -117,7 +126,6 @@ class Table {
         const column = new Column(name);
         this.columns.push(column);
         return column;
-
     }
 
     getColumn(name) {
@@ -154,7 +162,6 @@ class Table {
             if (isValidData(d)) column.data.push(d);
         }
     }
-
 }
 
 class Column {
@@ -188,5 +195,4 @@ class Column {
             this.data.splice(this.data.indexOf(d), 1);
         }
     }
-
 }
