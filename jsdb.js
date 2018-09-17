@@ -38,7 +38,7 @@ function checkArrays(arr1, arr2) {
 }
 
 function isValidData(data) {
-    if (data === null || ["string", "number"].includes(typeof data)) 
+    if (data === null || ["string", "number"].includes(typeof data))
         return true;
     throw new Error("Data value can only be a string, number or null");
 }
@@ -129,7 +129,7 @@ class Table {
     findColumns(...data) {
         if (!data.length) throw new Error("Data value can't be empty");
         const found = [];
-        for (const c of this.columns) 
+        for (const c of this.columns)
             if (checkArrays(data, c.data)) found.push(c);
         return found;
     }
@@ -145,15 +145,12 @@ class Table {
         const lengths = [];
         for (const name in this.columns) lengths.push(this.columns[name].data.length);
         const maxLength = Math.max(...lengths);
-        for (const column of this.columns){
-            const lens = column.data.length;
-            if (lens < maxLength){
-                const original = lens;
-                column.data.length = maxLength;
-                column.data.fill(null, original, maxLength);
-            }
+        for (const column of this.columns) {
+            const original = column.data.length;
+            column.data.length = maxLength;
+            column.data.fill(null, original, maxLength);
             let d = data.shift();
-            if(d === undefined) d = null;
+            if (d === undefined) d = null;
             if (isValidData(d)) column.data.push(d);
         }
     }
@@ -172,7 +169,7 @@ class Column {
 
     add(...data) {
         for (const d of data) {
-            if(isValidData(d)) this.data.push(d);
+            if (isValidData(d)) this.data.push(d);
         }
     }
 
@@ -186,7 +183,7 @@ class Column {
     }
 
     remove(...data) {
-        for (const d of data){
+        for (const d of data) {
             if (!this.data.includes(d)) throw new Error("Can't find data value: " + d);
             this.data.splice(this.data.indexOf(d), 1);
         }
