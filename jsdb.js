@@ -3,6 +3,7 @@ const fs = require('fs');
 exports.createDB = name => new Promise((res, rej) => {
     fs.writeFile(name + ".jsdb", Date(), err => {
         if (err) rej(err);
+        fs.appendFile("jsdb.log", "\nDatabase '" + name + "' created successfully " + Date());
         res(new JSDB(name));
     });
 });
@@ -32,6 +33,7 @@ exports.parseDB = name => new Promise((res, rej) => {
                     else column.add(parseFloat(d));
             }
         }
+        fs.appendFile("jsdb.log", "\nDatabase '" + name + "' parsed successfully " + Date());
         res(db);
     })
 });
@@ -69,18 +71,23 @@ class JSDB {
         isValidName(name);
         const table = new Table(name);
         this.tables[name] = table;
+        fs.appendFile("jsdb.log", "\nTable '" + name + "' created in database '" + this.db + "' successfully " + Date());
         return table;
     }
 
     getTable(name) {
         const table = this.tables[name];
-        if (!table) throw new Error("Can't find table: " + name);
+        if (!table) {
+            fs.appendFile("jsdb.log", "\nError finding table '" + name + "' " + Date());
+            throw new Error("Can't find table: " + name);
+        }
         return table;
     }
 
     deleteTable(name) {
         const table = this.tables[name];
         if (!table) throw new Error("Can't find table: " + name);
+        fs.appendFile("jsdb.log", "\nTable '" + name + "' located in database '" + this.db + "' deleted successfully " + Date());
         delete this.tables[name];
     }
 
@@ -114,6 +121,7 @@ class JSDB {
 class Table {
     constructor(name) {
         this.columns = [];
+        this.name = name;
     }
 
     list() {
@@ -124,12 +132,16 @@ class Table {
         isValidName(name);
         const column = new Column(name);
         this.columns.push(column);
+        fs.appendFile("jsdb.log", "\nColumn '" + name + "' created in table '" + this.name + "' successfully " + Date());
         return column;
     }
 
     getColumn(name) {
         const column = this.columns.find(c => c.name == name);
-        if (!column) throw new Error("Can't find column: " + name);
+        if (!column){
+            fs.appendFile("jsdb.log", "\nError finding column '" + name +"' " + Date());
+            throw new Error("Can't find column: " + name);
+        }
         return column;
     }
 
@@ -144,6 +156,7 @@ class Table {
     deleteColumn(name) {
         const index = this.columns.findIndex(c => c.name == name);
         if (index == -1) throw new Error("Can't find column: " + name);
+        fs.appendFile("jsdb.log", "\nColumn '" + name + "' located in table '" + this.name + "' deleted successfully " + Date());
         this.columns.splice(index, 1);
     }
 
@@ -159,6 +172,7 @@ class Table {
             const d = data.shift() === undefined? null: data.shift();
             if (isValidData(d)) column.data.push(d);
         }
+        fs.appendFile("jsdb.log", "\nData value(s) '" + data + "' inserted into all columns in table '" + this.name + "' successfully " + Date());
     }
 }
 
@@ -175,6 +189,7 @@ class Column {
     add(...data) {
         for (const d of data) {
             if (isValidData(d)) this.data.push(d);
+            fs.appendFile("jsdb.log", "\nData value(s) '" + data + "' inserted into column '" + this.name + "' successfully " + Date());
         }
     }
 
@@ -185,11 +200,14 @@ class Column {
                 if (!all) return;
             }
         }
+        fs.appendFile("jsdb.log", "\nData value(s) '" + oldData + "' have been replaced with data values '" + newData + "' in column '" + this.name + "' successfully " + Date());
     }
 
     rename(name) {
+        const oldName = this.name;
         if (isValidName(name))
             this.name = name;
+        fs.appendFile("jsdb.log", "\nColumn '" + oldName + "' renamed to '" + this.name + "' successfully " + Date());
     }
 
     remove(...data) {
@@ -197,5 +215,6 @@ class Column {
             if (!this.data.includes(d)) throw new Error("Can't find data value: " + d);
             this.data.splice(this.data.indexOf(d), 1);
         }
+        fs.appendFile("jsdb.log", "\nData value(s) '" + data + "' removed from column '" + this.name + "' successfully " + Date());
     }
 }
