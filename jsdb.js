@@ -156,8 +156,7 @@ class Table {
             const original = column.data.length;
             column.data.length = maxLength;
             column.data.fill(null, original, maxLength);
-            let d = data.shift();
-            if (d === undefined) d = null;
+            const d = data.shift() === undefined? null: data.shift();
             if (isValidData(d)) column.data.push(d);
         }
     }

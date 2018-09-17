@@ -5,11 +5,14 @@ async function playWithDB() {
 
     const table = test.getTable('table');
 
-    const lol = table.getColumn('lol');
+    const hi = table.getColumn('hi');
 
-    lol.rename('hi');
 
-    console.log(lol.list());
+    hi.add({lol: "this is an object"});
+
+    console.log(hi.list());
+
+    await test.update();
 }
 
 playWithDB();

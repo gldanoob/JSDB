@@ -11,6 +11,9 @@
 async function example() {
     const db = require('./jsdb');
     const myDB = await db.createDB('myDB');
+    /* or 
+        const myDB = await db.parseDB('myDB');
+    to get an existing database */
     const myTable = myDB.addTable('myTable');
     myTable.addColumn('Column').add("string1", 342, "string2");
 
@@ -22,7 +25,6 @@ example();
 
 
 ## Methods
-
 - `await createDB(name)`: creates a database and returns the [JSDB](#jsdb) object  
 - `await parseDB(name)`: parse an existing database and returns the [JSDB](#jsdb) object  
 
