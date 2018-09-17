@@ -7,7 +7,8 @@ async function playWithDB() {
     await test.update();
 
     const test1 = await db.parseDB('test');
-    console.log(test1)
+
+    console.log(test1);
     
 }
 

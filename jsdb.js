@@ -59,7 +59,7 @@ function isValidName(name) {
 
 
 function log(message) {
-    fs.appendFile("jsdb.log", message + "on" + Date() + " \n ", err => {if(err) throw err});
+    fs.appendFile("jsdb.log", message + " on " + Date() + " \n", err => {if(err) throw err});
 }
 
 class JSDB {
@@ -223,4 +223,3 @@ class Column {
         log("Data '" + data + "' removed from column '" + this.name + "' successfully")
     }
 }
-
