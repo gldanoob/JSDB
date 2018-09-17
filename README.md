@@ -41,7 +41,7 @@ example();
 - `getColumn(name)`: gets the column by `name` and returns it as a [Column](#column) object  
 - `findColumns(data1, data2...)`: returns all columns with the matching data
 - `deleteColumn(name)`: deletes the column named `name`
-- `insertAllColumns(data1, data2...)`: inserts data into each columns within the table respectively and matches all columns to the same length using placeholder null
+- `insertAllColumns(data1, data2...)`: inserts data into each column within the table respectively and matches all columns to the same length using placeholder null
 
 ### Column
 - `list()`: returns an array of data values 
