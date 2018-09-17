@@ -7,7 +7,6 @@ async function playWithDB() {
 
     const hi = table.getColumn('hi');
 
-
     hi.add({lol: "this is an object"});
 
     console.log(hi.list());
