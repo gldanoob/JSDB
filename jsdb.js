@@ -3,7 +3,7 @@ const fs = require('fs');
 exports.createDB = name => new Promise((res, rej) => {
     fs.writeFile(name + ".jsdb", Date(), err => {
         if (err) rej(err);
-        fs.appendFile("jsdb.log", "\nDatabase '" + name + "' created successfully " + Date());
+        log("Database '" + name + "' created successfully");
         res(new JSDB(name));
     });
 });
@@ -33,7 +33,7 @@ exports.parseDB = name => new Promise((res, rej) => {
                     else column.add(parseFloat(d));
             }
         }
-        fs.appendFile("jsdb.log", "\nDatabase '" + name + "' parsed successfully " + Date());
+        log("Database '" + name + "' parsed successfully");
         res(db);
     })
 });
@@ -57,6 +57,11 @@ function isValidName(name) {
     throw new Error("The name can only be a non-empty string");
 }
 
+
+function log(message) {
+    fs.appendFile("jsdb.log", message + "on" + Date() + " \n ", err => {if(err) throw err});
+}
+
 class JSDB {
     constructor(db) {
         this.tables = {};
@@ -71,14 +76,14 @@ class JSDB {
         isValidName(name);
         const table = new Table(name);
         this.tables[name] = table;
-        fs.appendFile("jsdb.log", "\nTable '" + name + "' created in database '" + this.db + "' successfully " + Date());
+        log("Table '" + name + "' created in database '" + this.db + "' successfully");
         return table;
     }
 
     getTable(name) {
         const table = this.tables[name];
         if (!table) {
-            fs.appendFile("jsdb.log", "\nError finding table '" + name + "' " + Date());
+            log("Error finding table '" + name + "'");
             throw new Error("Can't find table: " + name);
         }
         return table;
@@ -87,7 +92,7 @@ class JSDB {
     deleteTable(name) {
         const table = this.tables[name];
         if (!table) throw new Error("Can't find table: " + name);
-        fs.appendFile("jsdb.log", "\nTable '" + name + "' located in database '" + this.db + "' deleted successfully " + Date());
+        log("Table '" + name + "' located in database '" + this.db + "' deleted successfully");
         delete this.tables[name];
     }
 
@@ -132,14 +137,14 @@ class Table {
         isValidName(name);
         const column = new Column(name);
         this.columns.push(column);
-        fs.appendFile("jsdb.log", "\nColumn '" + name + "' created in table '" + this.name + "' successfully " + Date());
+        log("Column '" + name + "' created in table '" + this.name + "' successfully");
         return column;
     }
 
     getColumn(name) {
         const column = this.columns.find(c => c.name == name);
         if (!column){
-            fs.appendFile("jsdb.log", "\nError finding column '" + name +"' " + Date());
+            log("Error finding column '" + name);
             throw new Error("Can't find column: " + name);
         }
         return column;
@@ -156,7 +161,7 @@ class Table {
     deleteColumn(name) {
         const index = this.columns.findIndex(c => c.name == name);
         if (index == -1) throw new Error("Can't find column: " + name);
-        fs.appendFile("jsdb.log", "\nColumn '" + name + "' located in table '" + this.name + "' deleted successfully " + Date());
+        log("Column '" + name + "' located in table '" + this.name + "' deleted successfully ");
         this.columns.splice(index, 1);
     }
 
@@ -172,7 +177,7 @@ class Table {
             const d = data.shift() === undefined? null: data.shift();
             if (isValidData(d)) column.data.push(d);
         }
-        fs.appendFile("jsdb.log", "\nData value(s) '" + data + "' inserted into all columns in table '" + this.name + "' successfully " + Date());
+        log("Data '" + data + "' inserted into all columns in table '" + this.name + "' successfully");
     }
 }
 
@@ -189,7 +194,7 @@ class Column {
     add(...data) {
         for (const d of data) {
             if (isValidData(d)) this.data.push(d);
-            fs.appendFile("jsdb.log", "\nData value(s) '" + data + "' inserted into column '" + this.name + "' successfully " + Date());
+            log("Data '" + data + "' inserted into column '" + this.name + "' successfully");
         }
     }
 
@@ -200,14 +205,14 @@ class Column {
                 if (!all) return;
             }
         }
-        fs.appendFile("jsdb.log", "\nData value(s) '" + oldData + "' have been replaced with data values '" + newData + "' in column '" + this.name + "' successfully " + Date());
+        log("Data '" + oldData + "' have been replaced with data values '" + newData + "' in column '" + this.name + "' successfully");
     }
 
     rename(name) {
         const oldName = this.name;
         if (isValidName(name))
             this.name = name;
-        fs.appendFile("jsdb.log", "\nColumn '" + oldName + "' renamed to '" + this.name + "' successfully " + Date());
+        log("Column '" + oldName + "' renamed to '" + this.name + "' successfully ");
     }
 
     remove(...data) {
@@ -215,6 +220,7 @@ class Column {
             if (!this.data.includes(d)) throw new Error("Can't find data value: " + d);
             this.data.splice(this.data.indexOf(d), 1);
         }
-        fs.appendFile("jsdb.log", "\nData value(s) '" + data + "' removed from column '" + this.name + "' successfully " + Date());
+        log("Data '" + data + "' removed from column '" + this.name + "' successfully")
     }
 }
+
