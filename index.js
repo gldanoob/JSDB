@@ -7,6 +7,8 @@ async function playWithDB() {
 
     const lol = table.getColumn('lol');
 
+    lol.rename('hi');
+
     console.log(lol.list());
 }
 

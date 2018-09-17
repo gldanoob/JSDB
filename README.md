@@ -45,6 +45,7 @@ example();
 
 ### Column
 - `list()`: returns an array of data values 
-- `add(data1, data2...)`: adds the data into the column 
+- `add(data1, data2...)`: adds the data into the column. The data can only be a string, number, boolean, null, an array or object  
 - `replace(oldData, newData, all?)`: replaces all `oldData` with `newData` if all is set to `true`, or else replaces the first `oldData`
+- `rename(name)`: renames the column  
 - `remove(data1, data2...)` : removes the data from the column

@@ -50,7 +50,7 @@ function isValidData(data) {
 }
 
 function isValidName(name) {
-    if (typeof name == "string" && name != "")
+    if (typeof name === "string" && name != "")
         return true;
     throw new Error("The name can only be a non-empty string");
 }
@@ -112,7 +112,7 @@ class JSDB {
 }
 
 class Table {
-    constructor() {
+    constructor(name) {
         this.columns = [];
     }
 
@@ -161,10 +161,6 @@ class Table {
             if (isValidData(d)) column.data.push(d);
         }
     }
-
-    rename(name) {
-
-    }
 }
 
 class Column {
@@ -193,7 +189,8 @@ class Column {
     }
 
     rename(name) {
-        this.name = name;
+        if (isValidName(name))
+            this.name = name;
     }
 
     remove(...data) {
