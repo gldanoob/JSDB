@@ -14,10 +14,10 @@ exports.parseDB = name => new Promise((res, rej) => {
     fs.readFile(name + ".jsdb", 'utf8', (err, data) => {
         if (err) rej(err);
         const db = new JSDB(name);
-        const tables = data.split('\n\n');
+        const tables = data.split('\r\n\r\n');
         tables.shift();
         for (const t of tables) {
-            const columns = t.split('\n');
+            const columns = t.split('\r\n');
             const table = db.addTable(columns.shift());
             for (const c of columns) {
                 const data = c.split(' ');
