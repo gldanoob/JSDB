@@ -44,8 +44,8 @@ function checkArrays(arr1, arr2) {
 }
 
 function isValidData(data) {
-    if (data === undefined || Number.isNaN(data))
-        throw new Error("Data value can't be undefined or NaN.");
+    if (typeof data === "function" || data === undefined || Number.isNaN(data))
+        throw new Error("Data value can't be a function, undefined or NaN.");
     return true;
 }
 
@@ -58,7 +58,6 @@ function isValidName(name) {
 class JSDB {
     constructor(db) {
         this.tables = {};
-        //name of the database
         this.db = db;
     }
 
@@ -162,6 +161,10 @@ class Table {
             if (isValidData(d)) column.data.push(d);
         }
     }
+
+    rename(name) {
+
+    }
 }
 
 class Column {
@@ -187,6 +190,10 @@ class Column {
                 if (!all) return;
             }
         }
+    }
+
+    rename(name) {
+        this.name = name;
     }
 
     remove(...data) {
